@@ -1,3 +1,4 @@
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,27 +8,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EventosComponent implements OnInit {
 
-  eventos: any = [
-    {
-      EventoId: 1,
-      Tema: 'Angular',
-      Local: 'Lisboa'
-    },
-    {
-      EventoId: 2,
-      Tema: '.Net Core',
-      Local: 'Luanda'
-    },
-    {
-      EventoId: 3,
-      Tema: 'Angular & .Net Core',
-      Local: 'Londres'
-    }
-  ];
+  eventos: any;
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
+  // O Método OnInit serve para executar algumas instruções antes do HTML ser executado!
+  // tslint:disable-next-line: typedef
   ngOnInit() {
+    this.GetEventos();
   }
 
+  // tslint:disable-next-line: typedef
+  GetEventos(){
+    this.http.get('http://localhost:5000/WeatherForecast').subscribe(response => {
+      this.eventos = response;
+      console.log(response);
+    }, error => {
+      console.log(error);
+    });
+  }
 }
