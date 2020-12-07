@@ -35,6 +35,9 @@ namespace ProAgil.API.Migrations
 
                     b.Property<string>("Tema")
                         .HasColumnType("TEXT");
+                    
+                    b.Property<string>("ImagemUrl")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("EventoId");
 
