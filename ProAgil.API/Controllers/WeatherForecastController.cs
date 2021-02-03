@@ -6,10 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ProAgil.API.Models;
-using ProAgil.API.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using ProAgil.Repository;
 
 namespace ProAgil.API.Controllers
 {
@@ -18,9 +17,9 @@ namespace ProAgil.API.Controllers
     public class WeatherForecastController : ControllerBase
     {
 
-        public DataContext _context { get; }
+        public ProAgilContext _context { get; }
 
-        public WeatherForecastController(DataContext  context)
+        public WeatherForecastController(ProAgilContext  context)
         {
             this._context = context;
         } 
@@ -47,7 +46,7 @@ namespace ProAgil.API.Controllers
         {   
             #region comentários
             /* return (from x in _context.Eventos
-                        where x.EventoId == id
+                        where x.Id == id
                         select x).FirstOrDefault(); */
 
             // ou podemos fazer da seguinte forma
@@ -61,7 +60,7 @@ namespace ProAgil.API.Controllers
                         where x.EventoId == id
                         select x).FirstOrDefaultAsync(); */
 
-                var results = await _context.Eventos.FirstOrDefaultAsync(x => x.EventoId == id);
+                var results = await _context.Eventos.FirstOrDefaultAsync(x => x.Id == id);
                 return Ok(results);
 
 

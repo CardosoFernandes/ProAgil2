@@ -8,12 +8,15 @@ import { AppComponent } from './app.component';
 import { EventosComponent } from './Eventos/Eventos.component';
 import { NavComponent } from './nav/nav.component';
 import { from } from 'rxjs';
+import { DateTimeFormatPipePipe } from './_helpers/DateTimeFormatPipe.pipe';
+import { EventoService } from './_services/evento.service';
 
 @NgModule({
   declarations: [
     AppComponent,
       EventosComponent,
-      NavComponent
+      NavComponent,
+      DateTimeFormatPipePipe
    ],
   imports: [
     BrowserModule,
@@ -21,7 +24,9 @@ import { from } from 'rxjs';
     HttpClientModule,
     FormsModule
   ],
-  providers: [],
+  providers: [
+    EventoService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

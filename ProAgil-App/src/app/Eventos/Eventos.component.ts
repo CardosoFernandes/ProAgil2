@@ -1,6 +1,6 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { EMPTY } from 'rxjs';
+import { Evento } from '../_models/Evento';
+import { EventoService } from '../_services/evento.service';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -19,16 +19,17 @@ export class EventosComponent implements OnInit {
 
   public set filtroLista(value: string) {
     this._filtroLista = value;
-    this.eventosFiltrados = this.filtroLista ? this.FiltrarEventos(this.filtroLista) : this.eventos;
+    // tslint:disable-next-line: triple-equals
+    this.eventosFiltrados = this.filtroLista.length != 0 ? this.FiltrarEventos(this.filtroLista) : this.eventos;
   }
 
-  eventos: any = []; // Variável que pode assumir qualquer tipo de dados... [any]
-  eventosFiltrados: any = [];
+  eventos: Evento[] = []; // Variável que pode assumir qualquer tipo de dados... [any]
+  eventosFiltrados: Evento[] = [];
   imagemAltura = 50;
   imagemMargen = 2;
   mostrarImagem = false;
 
-  constructor(private http: HttpClient) { }
+  constructor(private eventoService: EventoService) { }
 
   // O Método OnInit serve para executar alguns métodos com instruções específicas antes do HTML ser montado!
   // tslint:disable-next-line: typedef
@@ -36,7 +37,7 @@ export class EventosComponent implements OnInit {
     this.GetEventos();
   }
 
-  FiltrarEventos(filtrarPor: string): any {
+  FiltrarEventos(filtrarPor: string): Evento[] {
     filtrarPor = filtrarPor.toLocaleLowerCase();
     return this.eventos.filter(
       (      evento: { tema: string; }) => evento.tema.toLocaleLowerCase().indexOf(filtrarPor) !== -1
@@ -52,9 +53,12 @@ export class EventosComponent implements OnInit {
   // preenche a variável "eventos"
   // tslint:disable-next-line: typedef
   GetEventos(){
-    this.http.get('http://localhost:5000/WeatherForecast').subscribe(response => {
-      this.eventos = response;
-      console.log(response);
+    this.eventoService.getAllEvento().subscribe(
+      // tslint:disable-next-line: variable-name
+      (_eventos: Evento[]) => {
+      this.eventos = _eventos;
+      this.eventosFiltrados = this.eventos;
+      console.log(_eventos);
     }, error => {
       console.log(error);
     });
