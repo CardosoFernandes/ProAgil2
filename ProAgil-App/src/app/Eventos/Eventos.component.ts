@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Evento } from '../_models/Evento';
 import { EventoService } from '../_services/evento.service';
 
@@ -10,6 +11,19 @@ import { EventoService } from '../_services/evento.service';
 })
 export class EventosComponent implements OnInit {
 
+  eventos: Evento[] = []; // Variável que pode assumir qualquer tipo de dados... [any]
+  eventosFiltrados: Evento[] = [];
+  imagemAltura = 50;
+  imagemMargen = 2;
+  mostrarImagem = false;
+  modalRef!: BsModalRef;
+
+
+  constructor(
+    private eventoService: EventoService,
+    private modalService: BsModalService
+    ) { }
+
   // tslint:disable-next-line: variable-name
   // tslint:disable-next-line: variable-name
   _filtroLista!: string;
@@ -18,19 +32,19 @@ export class EventosComponent implements OnInit {
   }
 
   public set filtroLista(value: string) {
+    // tslint:disable-next-line: no-debugger
     this._filtroLista = value;
     // tslint:disable-next-line: triple-equals
     this.eventosFiltrados = this.filtroLista.length != 0 ? this.FiltrarEventos(this.filtroLista) : this.eventos;
+
+    // tslint:disable-next-line: max-line-length
+    // this.eventosFiltrados = [{id: 2, local: 'as', dataEvento: new Date('2021-06-21 18:20:00') , tema: 'Teste', qtdPessoas: 30, telefone:'', email:'', imagemUrl:'', palestranteEventos: [] , lotes: [], redesSociais: [] }];
   }
 
-  eventos: Evento[] = []; // Variável que pode assumir qualquer tipo de dados... [any]
-  eventosFiltrados: Evento[] = [];
-  imagemAltura = 50;
-  imagemMargen = 2;
-  mostrarImagem = false;
-
-  constructor(private eventoService: EventoService) { }
-
+  // tslint:disable-next-line: typedef
+  openModal(template: TemplateRef<any>){
+    this.modalRef = this.modalService.show(template);
+  }
   // O Método OnInit serve para executar alguns métodos com instruções específicas antes do HTML ser montado!
   // tslint:disable-next-line: typedef
   ngOnInit() {
