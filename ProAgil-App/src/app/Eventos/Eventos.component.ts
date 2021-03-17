@@ -6,7 +6,6 @@ import { EventoService } from '../_services/evento.service';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { ptBrLocale } from 'ngx-bootstrap/locale';
-import { templateJitUrl } from '@angular/compiler';
 defineLocale('pt-br', ptBrLocale); 
 
 @Component({
@@ -190,9 +189,9 @@ export class EventosComponent implements OnInit {
   }
 
   excluirEvento(evento: Evento, template: any) {
-    this.openModal(template);
     this.evento = evento;
     this.bodyDeletarEvento = `Tem certeza que deseja excluir o Evento: ${evento.tema}, Id: ${evento.id}`;
+    this.openModal(template);
   }
   
   confirmeDelete(template: any) {
