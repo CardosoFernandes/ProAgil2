@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Evento } from '../_models/Evento';
 import { EventoService } from '../_services/evento.service';
+import { ToastrService } from 'ngx-toastr';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { ptBrLocale } from 'ngx-bootstrap/locale';
@@ -18,6 +19,7 @@ defineLocale('pt-br', ptBrLocale);
 export class EventosComponent implements OnInit {
 
   //#region Variáveis e propriedades
+  titulo: string = "Eventos";
   eventos: Evento[]; // Variável que pode assumir qualquer tipo de dados... [any]
   evento: Evento;
   eventosFiltrados: Evento[] = [];
@@ -47,10 +49,11 @@ export class EventosComponent implements OnInit {
 
 
   constructor(
-    private eventoService: EventoService,
-    private modalService: BsModalService,
-    private fb: FormBuilder,
-    private localeService: BsLocaleService
+      private eventoService: EventoService
+    , private modalService: BsModalService
+    , private fb: FormBuilder
+    , private localeService: BsLocaleService
+    , private toastr: ToastrService
     ) { this.localeService.use('pt-br'); }
   
   // O Método OnInit serve para executar alguns métodos com instruções específicas antes do HTML ser montado!
@@ -168,7 +171,9 @@ export class EventosComponent implements OnInit {
           () => {
             template.hide();
             this.GetEventos();
+            this.toastr.success('Evento criado com sucesso!', ' ✨');
           }, error => {
+            this.toastr.error('Não foi possível inserir o evento!', '✨');
             console.log(error);
           }
         );
@@ -179,7 +184,9 @@ export class EventosComponent implements OnInit {
           () => {
             template.hide();
             this.GetEventos();
+            this.toastr.success('Evento criado com sucesso!', '✨');
           }, error => {
+            this.toastr.error('Não foi possível editar o evento!', '✨');
             console.log(error);
           }
         );
@@ -199,7 +206,9 @@ export class EventosComponent implements OnInit {
       () => {
           template.hide();
           this.GetEventos();
+          this.toastr.success('Evento apagado com sucesso!', 'Toastr fun!');
         }, error => {
+          this.toastr.error('Não foi possível apagar o evento!', 'Toastr fun!');
           console.log(error);
         }
     );

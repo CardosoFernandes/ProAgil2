@@ -9,21 +9,32 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { ToastrModule } from 'ngx-toastr';
+
 import { EventoService } from './_services/evento.service';
 
 import { AppComponent } from './app.component';
-import { EventosComponent } from './Eventos/Eventos.component';
 import { NavComponent } from './nav/nav.component';
+import { EventosComponent } from './Eventos/Eventos.component';
+import { PalestrantesComponent } from './palestrantes/palestrantes.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { ContactosComponent } from './contactos/contactos.component';
+import { TituloComponent } from './_shared/titulo/titulo.component'
 
 import { DateTimeFormatPipePipe } from './_helpers/DateTimeFormatPipe.pipe';
 
 
+
 @NgModule({
-  declarations: [
+  declarations: [			
     AppComponent,
     EventosComponent,
     NavComponent,
-    DateTimeFormatPipePipe
+    DateTimeFormatPipePipe,
+      PalestrantesComponent,
+      DashboardComponent,
+      ContactosComponent,
+      TituloComponent
    ],
   imports: [
     BrowserModule,
@@ -33,6 +44,8 @@ import { DateTimeFormatPipePipe } from './_helpers/DateTimeFormatPipe.pipe';
     BsDropdownModule.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
     BsDatepickerModule.forRoot(),
     BrowserAnimationsModule,
     ReactiveFormsModule
