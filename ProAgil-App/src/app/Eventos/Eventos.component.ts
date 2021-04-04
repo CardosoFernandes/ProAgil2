@@ -30,6 +30,10 @@ export class EventosComponent implements OnInit {
   registerForm: FormGroup;
   saveMode = 'post';
   bodyDeletarEvento: string;
+  file: File;
+  modalTitle: string;
+  fileNameToUpdate: string = '';
+  dataActual: string;
 
   // tslint:disable-next-line: variable-name
   _filtroLista: string;
@@ -88,7 +92,8 @@ export class EventosComponent implements OnInit {
   FiltrarEventos(filtrarPor: string): Evento[] {
     filtrarPor = filtrarPor.toLocaleLowerCase();
     return this.eventos.filter(
-      (      evento: { tema: string; }) => evento.tema.toLocaleLowerCase().indexOf(filtrarPor) !== -1
+      (evento: { tema: string; local: string}) => evento.tema.toLocaleLowerCase().indexOf(filtrarPor) !== -1 ||
+      evento.local.toLocaleLowerCase().indexOf(filtrarPor) !== -1
     );
   }
 
@@ -132,17 +137,21 @@ export class EventosComponent implements OnInit {
   // }
 
   novoEvento(template: any){
+    this.modalTitle = 'Novo evento💰';
     this.saveMode = 'post';
     this.openModal(template);
-
   }
 
   // tslint:disable-next-line: typedef
   editarEvento(template: any, _evento: Evento){
+    debugger;
+    this.modalTitle = 'Editar evento💰';
     this.saveMode = 'put';
     this.openModal(template);
-    this.evento = _evento;
-    this.registerForm.patchValue(_evento);
+    this.evento = Object.assign({}, _evento);
+    this.fileNameToUpdate = _evento.imagemUrl.toString();
+    this.evento.imagemUrl = '';
+    this.registerForm.patchValue(this.evento);
     
     /* this.eventoService.getEventoById(_evento.id).subscribe(
       // tslint:disable-next-line: variable-name
@@ -159,14 +168,46 @@ export class EventosComponent implements OnInit {
     template.show();
   }
 
+  OnFileChange(event){
+    const reader = new FileReader();
+    if (event.target.files && event.target.files.length){
+      this.file = event.target.files;
+      console.log(this.file);
+    }
+  }
+
+
+  uploadImagem(){
+    if (this.saveMode === 'post'){
+      const nomeArquivo = this.evento.imagemUrl.split('\\', 3);
+      this.evento.imagemUrl = nomeArquivo[2];
+
+      this.eventoService.postUpload(this.file, nomeArquivo[2]).subscribe(
+        () => {
+          this.dataActual = new Date().getMilliseconds().toString();
+          this.GetEventos();
+        }
+      );
+    }else{
+      this.evento.imagemUrl = this.fileNameToUpdate;
+      this.eventoService.postUpload(this.file, this.fileNameToUpdate).subscribe(
+        () => {
+          this.dataActual = new Date().getMilliseconds().toString();
+          this.GetEventos();
+        }
+      );
+    }
+    
+  }
+
   // tslint:disable-next-line: typedef
   salvarAlteracao(template: any){
-    debugger;
     if (!this.registerForm.invalid){
-
       if (this.saveMode === 'post'){
-
         this.evento = Object.assign({}, this.registerForm.value);
+
+        this.uploadImagem();
+
         this.eventoService.postEvento(this.evento).subscribe(
           () => {
             template.hide();
@@ -180,6 +221,9 @@ export class EventosComponent implements OnInit {
 
       } else {
         this.evento = Object.assign({id: this.evento.id}, this.registerForm.value);
+        
+        this.uploadImagem();
+
         this.eventoService.putEvento(this.evento).subscribe(
           () => {
             template.hide();
@@ -194,7 +238,7 @@ export class EventosComponent implements OnInit {
       
     }
   }
-
+  
   excluirEvento(evento: Evento, template: any) {
     this.evento = evento;
     this.bodyDeletarEvento = `Tem certeza que deseja excluir o Evento: ${evento.tema}, Id: ${evento.id}`;

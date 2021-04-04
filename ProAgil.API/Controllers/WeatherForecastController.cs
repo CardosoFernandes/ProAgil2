@@ -61,6 +61,7 @@ namespace ProAgil.API.Controllers
                         select x).FirstOrDefaultAsync(); */
 
                 var results = await _context.Eventos.FirstOrDefaultAsync(x => x.Id == id);
+                var resultado = _context.Eventos.Select(x => x.Id == id).FirstOrDefault();
                 return Ok(results);
 
 

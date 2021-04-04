@@ -36,8 +36,7 @@
     <tbody *ngIf="eventos && eventos.length">
         <tr *ngFor="let evento of eventosFiltrados">
             <td style="text-align: center;">
-                <img *ngIf="mostrarImagem" src="http://localhost:5000/img/{{evento.imagemUrl}}"
-                    [style.width.px]="imagemAltura">
+                <img *ngIf="mostrarImagem" src="http://localhost:5000/resources/images/{{evento.imagemUrl}}?_ts={{dataActual}}" [style.width.px]="imagemAltura">
             </td>
             <td>{{evento.id}}</td>
             <td>{{evento.tema}}</td>
@@ -78,7 +77,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 id="dialog-sizes-name1" class="modal-title pull-left">Novo Evento💰</h4>
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">{{modalTitle}}</h4>
         <button type="button" class="close pull-right" (click)="template.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -116,7 +115,7 @@
                     <label>Data e Hora</label>
                     <input type="text" class="form-control" formControlName="dataEvento" 
                     bsDatepicker
-                    [bsConfig]="{ dateInputFormat : 'DD/MM/YYYY hh:mm a' }"
+                    [bsConfig]="{ dateInputFormat : 'DD/MM/YYYY hh:mm' }"
                     [ngClass]="{'is-invalid': registerForm.get('dataEvento').touched
                                         && registerForm.get('dataEvento').errors}" placeholder="Insira a data e hora">
                     <div *ngIf="registerForm.get('dataEvento').hasError('required')
@@ -145,8 +144,14 @@
                 </div>
                 <div class="form-group col-md-8">
                     <label>Imagem</label>
-                    <input type="text" class="form-control" formControlName="imagemUrl" [ngClass]="{'is-invalid': registerForm.get('imagemUrl').touched
-                                        && registerForm.get('imagemUrl').errors}" placeholder="Insira a imagem">
+                    <table>
+                        <td>
+                            <button class="btn btn-success" (click)="file.click()" >Escolher Imagem</button>
+                            <input #file type="file" class="form-control" formControlName="imagemUrl" [ngClass]="{'is-invalid': registerForm.get('imagemUrl').touched
+                                && registerForm.get('imagemUrl').errors}" placeholder="Insira a imagem" (change)="OnFileChange($event)" style="display: none;">
+                        </td>
+                    </table>
+                    
                     <div *ngIf="registerForm.get('imagemUrl').hasError('required')
                         && registerForm.get('imagemUrl').touched" class="invalid-feedback">
                         Imagem é obrigatória

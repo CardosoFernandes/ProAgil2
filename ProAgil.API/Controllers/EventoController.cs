@@ -1,3 +1,5 @@
+using System.Net.Http.Headers;
+using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -39,6 +41,34 @@ namespace ProAgil.API.Controllers
             }        
         }
 
+
+        [HttpPost("upload")]
+        public IActionResult upload()
+        {
+            try
+            {
+                var file = Request.Form.Files[0];
+                var folderName = Path.Combine("Resources", "Images"); // Criar o caminho(Path)
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName); // Local onde será guardado o ficheiro
+
+                if (file.Length > 0)
+                {
+                    var filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName; // Analisar o nome do arquivo
+                    var fullPath = Path.Combine(pathToSave, filename.Replace("\"", "").Trim());
+
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                }
+
+                return Ok();
+            }
+            catch (System.Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Servidor falhou!");
+            }
+        }
         [HttpGet("{eventoId}")]
         public async Task<ActionResult> Get(int eventoId)
         {   
